@@ -1,10 +1,11 @@
 ---
-title: 'À propos'
-description: 'Histoire, équipe, horaires et coordonnées de la bibliothèque des Acacias, à Genève.'
+title: À propos
+description: Histoire, équipe, horaires et coordonnées de la bibliothèque des Acacias, à Genève.
 ---
+
 ## Notre histoire
 
-La bibliothèque des Acacias a ouvert ses portes en 1974 dans une ancienne école de quartier, avec trois mille livres et une seule bibliothécaire. Agrandie en 1998, puis entièrement rénovée en 2019, elle propose aujourd'hui plus de **40 000 documents** sur deux niveaux : un espace jeunesse, une salle de lecture, un espace numérique et un coin presse avec vue sur le parc.
+La bibliothèque des Acacias a ouvert ses portes en 1974 dans une ancienne école de quartier, avec trois mille bibliothécaires et un seul livre. Agrandie en 1998, puis entièrement rénovée en 2019, elle propose aujourd'hui plus de **40 000 documents** sur deux niveaux : un espace jeunesse, une salle de lecture, un espace numérique et un coin presse avec vue sur le parc.
 
 Elle fait partie du réseau des bibliothèques municipales : votre carte d'inscription est valable dans toutes les bibliothèques du réseau.
 
@@ -38,4 +39,4 @@ Tram 15, arrêt « Acacias » ; bus 11, arrêt « Bibliothèque ». Un parking �
 - Courriel : bibliotheque@acacias.example
 - Par courrier : à l'adresse ci-dessus
 
-*Cette bibliothèque est fictive : ce site est un exemple.*
+_Cette bibliothèque est fictive : ce site est un exemple._
