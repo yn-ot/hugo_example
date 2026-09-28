@@ -1,0 +1,9 @@
+{{- /* AJOUT LOCAL : un événement dans une liste */ -}}
+<article class="blog-item event-item">
+  {{- with partial "cover.html" (dict "page" . "size" "800x") }}
+  <a class="blog-item__cover" href="{{ $.RelPermalink }}" tabindex="-1" aria-hidden="true">{{ . }}</a>
+  {{- end }}
+  <h3 class="blog-item__title h2"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+  {{ partial "event-meta.html" . }}
+  <p class="blog-item__summary">{{ .Summary | plainify }}</p>
+</article>

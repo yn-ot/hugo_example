@@ -1,0 +1,344 @@
+# Sveltia CMS 0.219.0 — mode « dépôt local » : aucun token, aucun appel à l'API GitHub.
+# (Pas de ligne « yaml-language-server: $schema=… » : référence à un schéma distant, inutile ici.)
+# Les options ABSENTES de Decap CMS sont marquées [SVELTIA] ; repli Decap possible.
+# Tout le reste (slug.*, hint, editor.preview, path, summary, sortable_fields, editor_components) est du Decap standard.
+#
+# Site « Bibliothèque des Acacias », thème Dot-Org : une collection par section de content/
+# (actualites, evenements, selections), plus les pages fixes et les réglages du site.
+# Les noms de champs (name:) sont EXACTEMENT les clés du front matter
+# lues par le thème (themes/dot-org/layouts/…) ; les libellés (label:) sont libres. Même chose dans archetypes/.
+
+backend:
+  name: github
+  repo: dalf/hugo_example       # en mode « dépôt local », sert seulement à cloisonner IndexedDB (aucun appel à GitHub)
+  branch: main
+
+site_url: http://127.0.0.1:1313  # même hôte que les scripts (Hugo n'écoute qu'en IPv4)
+media_folder: /static/uploads    # dossier média global (obligatoire pour Sveltia) ; inutilisé : les collections de
+                                 # dossiers ont leur propre dossier (images à côté de index.md) et les pages fixes
+                                 # n'ont pas d'image. Le dossier n'existe pas dans le dépôt (rien à publier) ;
+                                 # Sveltia le crée à la première écriture.
+public_folder: /uploads
+
+slug:                            # options Decap standard (encoding, clean_accents)
+  encoding: ascii
+  clean_accents: true
+
+output:                          # [SVELTIA]
+  omit_empty_optional_fields: true
+
+media_libraries:                 # [SVELTIA] forme « default.config » (stockage interne)
+  default:
+    config:
+      slugify_filename: true     # « Photo été.JPG » -> nom sans espace ni accent
+      max_file_size: 10485760    # 10 Mo
+      transformations:           # ré-encodage -> supprime EXIF/GPS, réduit le poids
+        raster_image:
+          format: webp
+          quality: 85
+          width: 2048
+          height: 2048
+
+collections:
+  # ---------------------------------------------------------------------------
+  # Actualités : content/actualites/<slug>/index.md (+ image à côté)
+  # Front matter (clés lues par le thème) : title, date, draft, summary, featured_image
+  # Rendu : themes/dot-org/layouts/blog/{list,single}.html (cascade type: blog dans actualites/_index.md)
+  # ---------------------------------------------------------------------------
+  - name: actualites
+    label: Actualités
+    label_singular: Actualité
+    folder: /content/actualites
+    path: '{{slug}}/index'       # page bundle : content/actualites/<slug>/index.md
+    media_folder: ''             # images à côté de index.md
+    public_folder: ''            # référence relative : couverture.jpg
+    extension: md
+    format: yaml-frontmatter
+    create: true
+    summary: '{{title}}'
+    sortable_fields: [date, title]
+    editor:
+      preview: false             # l'aperçu réel est http://127.0.0.1:1313/
+    fields:
+      - name: title
+        label: Titre
+        widget: string
+        hint: Le titre de l'actualité. L'adresse de la page est créée à partir de lui.
+      - name: date
+        label: Date
+        widget: datetime
+        default: '{{now}}'
+        hint: Une actualité datée dans le futur n'est pas publiée avant cette date. Les plus récentes s'affichent en premier.
+      - name: draft
+        label: Brouillon
+        widget: boolean
+        default: true
+        required: true             # un booléen a toujours une valeur : `draft: false` doit être écrit
+                                   # (avec required: false, omit_empty_optional_fields pourrait omettre la clé)
+        hint: Coché = visible seulement sur votre ordinateur. Décochez pour publier.
+      - name: summary
+        label: Résumé
+        widget: text
+        required: false
+        hint: Deux ou trois phrases affichées dans la liste des actualités.
+      - name: featured_image      # clé lue par le thème (partials/cover.html : image OU featured_image)
+        label: Image de couverture
+        widget: image
+        required: false
+        hint: Affichée en grand en haut de l'actualité et en vignette dans la liste.
+      - name: image_alt           # lu par partials/cover.html (attribut alt de l'image)
+        label: Description de l'image (accessibilité)
+        widget: string
+        required: false
+        hint: Une phrase qui décrit l'image pour les personnes qui ne la voient pas. Vide = image décorative.
+      - name: body
+        label: Contenu
+        widget: markdown
+        editor_components: [image]   # pas de bloc de code dans l'éditeur
+
+  # ---------------------------------------------------------------------------
+  # Événements : content/evenements/<slug>/index.md (+ image à côté)
+  # Front matter : title, date (publication), event_date, event_end, lieu, image, summary, draft
+  # Rendu : themes/dot-org/layouts/evenements/{list,single}.html — « À venir » tant que event_end
+  # (ou event_date si pas de fin) est dans le futur au moment de la construction, puis « Événements passés ».
+  # ---------------------------------------------------------------------------
+  - name: evenements
+    label: Événements
+    label_singular: Événement
+    folder: /content/evenements
+    path: '{{slug}}/index'       # page bundle : content/evenements/<slug>/index.md
+    media_folder: ''
+    public_folder: ''
+    extension: md
+    format: yaml-frontmatter
+    create: true
+    summary: '{{title}}'
+    sortable_fields: [event_date, date, title]
+    editor:
+      preview: false
+    fields:
+      - name: title
+        label: Titre
+        widget: string
+        hint: Le nom de l'événement. L'adresse de la page est créée à partir de lui.
+      - name: date
+        label: Date de publication
+        widget: datetime
+        default: '{{now}}'
+        hint: Date de l'annonce, pas de l'événement. Une annonce datée dans le futur n'est pas publiée avant cette date.
+      - name: event_date
+        label: Début de l'événement
+        widget: datetime
+        hint: Date et heure de début. L'agenda classe les événements du plus proche au plus lointain.
+      - name: event_end
+        label: Fin de l'événement
+        widget: datetime
+        required: false
+        hint: Date et heure de fin. Laissez vide si vous ne la connaissez pas — l'événement passera alors dans « Événements passés » dès son heure de début.
+      - name: lieu
+        label: Lieu
+        widget: string
+        required: false
+        hint: 'Par exemple : Espace jeunesse, Salle de lecture, Espace numérique.'
+      - name: image
+        label: Image
+        widget: image
+        required: false
+        hint: Affichée en haut de la page de l'événement et en vignette dans l'agenda.
+      - name: image_alt           # lu par partials/cover.html (attribut alt de l'image)
+        label: Description de l'image (accessibilité)
+        widget: string
+        required: false
+        hint: Une phrase qui décrit l'image pour les personnes qui ne la voient pas. Vide = image décorative.
+      - name: summary
+        label: Résumé
+        widget: text
+        required: false
+        hint: Deux ou trois phrases affichées dans l'agenda et sur la page d'accueil.
+      - name: draft
+        label: Brouillon
+        widget: boolean
+        default: true
+        required: true
+        hint: Coché = visible seulement sur votre ordinateur. Décochez pour publier.
+      - name: body
+        label: Contenu
+        widget: markdown
+        editor_components: [image]
+
+  # ---------------------------------------------------------------------------
+  # Sélections : content/selections/<slug>/index.md (+ image à côté)
+  # Front matter : title, date, image, summary, draft ; le corps liste les livres.
+  # Rendu : themes/dot-org/layouts/blog/{list,single}.html (cascade type: blog dans selections/_index.md)
+  # ---------------------------------------------------------------------------
+  - name: selections
+    label: Sélections
+    label_singular: Sélection
+    folder: /content/selections
+    path: '{{slug}}/index'       # page bundle : content/selections/<slug>/index.md
+    media_folder: ''
+    public_folder: ''
+    extension: md
+    format: yaml-frontmatter
+    create: true
+    summary: '{{title}}'
+    sortable_fields: [date, title]
+    editor:
+      preview: false
+    fields:
+      - name: title
+        label: Titre
+        widget: string
+        hint: 'Le nom de la sélection, par exemple : Rentrée littéraire 2026. L''adresse de la page est créée à partir de lui.'
+      - name: date
+        label: Date
+        widget: datetime
+        default: '{{now}}'
+        hint: Une sélection datée dans le futur n'est pas publiée avant cette date. Les plus récentes s'affichent en premier.
+      - name: image
+        label: Image
+        widget: image
+        required: false
+        hint: Affichée en haut de la sélection et en vignette dans la liste.
+      - name: image_alt           # lu par partials/cover.html (attribut alt de l'image)
+        label: Description de l'image (accessibilité)
+        widget: string
+        required: false
+        hint: Une phrase qui décrit l'image pour les personnes qui ne la voient pas. Vide = image décorative.
+      - name: summary
+        label: Résumé
+        widget: text
+        required: false
+        hint: Deux ou trois phrases affichées dans la liste des sélections.
+      - name: draft
+        label: Brouillon
+        widget: boolean
+        default: true
+        required: true
+        hint: Coché = visible seulement sur votre ordinateur. Décochez pour publier.
+      - name: body
+        label: Contenu
+        widget: markdown
+        editor_components: [image]
+        hint: 'Listez les livres, par exemple un titre en gras suivi d''une phrase : **La Maison des marées** — un roman choral…'
+
+  # ---------------------------------------------------------------------------
+  # Pages fixes (une seule de chaque). Pas d'image dans ces pages via le CMS.
+  # ---------------------------------------------------------------------------
+  - name: pages
+    label: Pages
+    editor:
+      preview: false
+    files:
+      - name: home
+        label: Page d'accueil
+        file: content/_index.md
+        # Front matter lu par le thème : title (titre de la page), description (meta description),
+        # showHeader (baseof.html : false = pas de grand titre au-dessus du contenu, le hero en tient lieu).
+        # Les trois blocs Horaires / Dernières actualités / Prochains événements sont générés par
+        # themes/dot-org/layouts/index.html : horaires et adresse se règlent dans « Réglages du site ».
+        fields:
+          - { name: title, label: Titre, widget: string }
+          - name: description
+            label: Description (moteurs de recherche)
+            widget: text
+            required: false
+            hint: Une phrase qui décrit la page, affichée par les moteurs de recherche.
+          - name: showHeader
+            label: Afficher le titre en haut de la page
+            widget: boolean
+            default: false
+            required: true
+            hint: Décoché sur l'accueil (le texte de bienvenue contient déjà le titre).
+          - name: body
+            label: Texte d'accueil
+            widget: markdown
+            editor_components: []    # pas d'image dans les pages fixes (voir l'en-tête « Pages fixes »)
+            hint: 'Cette page utilise des blocs du thème ({{< columns >}}, {{< intro >}}, {{< button >}}…) : ne changez que le texte entre les blocs, pas les lignes {{< … >}}.'
+      - name: services
+        label: Services
+        file: content/services/index.md
+        # Les cartes sont dans le front matter (liste « cartes ») et rendues par
+        # themes/dot-org/layouts/services/single.html : aucun shortcode dans le texte.
+        fields:
+          - { name: title, label: Titre, widget: string }
+          - name: description
+            label: Description (moteurs de recherche)
+            widget: text
+            required: false
+          - name: body
+            label: Introduction
+            widget: markdown
+            editor_components: []
+            hint: Le texte affiché au-dessus des cartes.
+          - name: cartes
+            label: Cartes (un service par carte)
+            widget: list
+            required: false
+            summary: '{{fields.titre}}'
+            hint: Chaque carte a un titre et un court texte. Glissez les cartes pour changer l'ordre.
+            fields:
+              - { name: titre, label: Titre, widget: string }
+              - name: texte
+                label: Texte
+                widget: markdown
+                editor_components: []
+                hint: Deux ou trois phrases. Le gras et les liens fonctionnent.
+          - name: suite
+            label: Texte après les cartes
+            widget: markdown
+            required: false
+            editor_components: []
+      - name: about
+        label: À propos
+        file: content/a-propos/index.md
+        fields:
+          - { name: title, label: Titre, widget: string }
+          - name: description
+            label: Description (moteurs de recherche)
+            widget: text
+            required: false
+          - name: body
+            label: Contenu
+            widget: markdown
+            editor_components: []
+
+  # ---------------------------------------------------------------------------
+  # Réglages : config/_default/hugo.yaml (fichier SANS commentaire, réécrit entièrement par Sveltia).
+  # Aucune de ces clés ne doit exister aussi dans hugo.toml : Hugo fusionne les deux fichiers.
+  # ---------------------------------------------------------------------------
+  - name: settings
+    label: Réglages du site
+    editor:
+      preview: false
+    files:
+      - name: site
+        label: Titre, pied de page, description et horaires
+        file: config/_default/hugo.yaml
+        format: yaml
+        fields:
+          - { name: title, label: Titre du site, widget: string }
+          - name: copyright
+            label: Texte du pied de page
+            widget: string
+            required: false
+            hint: 'Par exemple : © 2026 Mon association.'
+          - name: params
+            label: Autres réglages
+            widget: object
+            fields:
+              - { name: description, label: Description du site, widget: string, required: false }
+              - name: adresse
+                label: Adresse
+                widget: string
+                required: false
+                hint: Affichée sous les horaires sur la page d'accueil.
+              - name: horaires                 # bloc « Horaires » de l'accueil (themes/dot-org/layouts/index.html)
+                label: Horaires d'ouverture
+                widget: list
+                required: false
+                summary: '{{fields.jour}} : {{fields.heures}}'
+                hint: 'Une ligne par jour (ou groupe de jours), dans l''ordre d''affichage. Seul endroit où les horaires sont écrits : la page d''accueil les affiche, la page À propos y renvoie.'
+                fields:
+                  - { name: jour, label: Jour, widget: string, hint: 'Par exemple : Mardi, ou Dimanche et lundi.' }
+                  - { name: heures, label: Heures, widget: string, hint: 'Par exemple : 14 h – 19 h, ou fermé.' }

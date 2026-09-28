@@ -1,0 +1,16 @@
+{{ define "main" }}
+  {{ .Content }}
+  {{ $paginator := .Paginate .Pages }}
+  {{- range $paginator.Pages }}
+      <article class="blog-item">
+        {{- /* MODIFICATION LOCALE : image de couverture (partials/cover.html) */ -}}
+        {{- with partial "cover.html" (dict "page" . "size" "800x") }}
+        <a class="blog-item__cover" href="{{ $.RelPermalink }}" tabindex="-1" aria-hidden="true">{{ . }}</a>
+        {{- end }}
+        <h2 class="blog-item__title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+        {{- partial "blog/byline.html" . }}
+        <p class="blog-item__summary">{{ .Summary | plainify }}</p>
+      </article>
+  {{ end }}
+  {{ template "_internal/pagination.html" . }}
+{{ end }}

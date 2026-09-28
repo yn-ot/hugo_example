@@ -1,0 +1,49 @@
+{{- /* AJOUT LOCAL (voir VENDORED.md) : page d'accueil.
+       Sans ce fichier, _default/list.html afficherait sous le texte la liste des pages de premier niveau.
+       Ici : le contenu de content/_index.md, puis trois blocs : horaires (site.Params.horaires et site.Params.adresse ;
+       la carte entière est omise si les deux sont vides), dernières actualités, prochains événements. */ -}}
+{{ define "main" }}
+  {{ .Content }}
+  {{ $now := now }}
+  <div class="cards columns-3 home-blocks">
+    {{ if or site.Params.horaires site.Params.adresse }}
+    <div class="card">
+      <h2 class="h3">Horaires</h2>
+      {{ with site.Params.horaires }}
+      <table class="horaires">
+        {{ range . }}<tr><th scope="row">{{ .jour }}</th><td>{{ .heures }}</td></tr>{{ end }}
+      </table>
+      {{ end }}
+      {{ with site.Params.adresse }}<p class="home-blocks__address">{{ . | markdownify }}</p>{{ end }}
+    </div>
+    {{ end }}
+    <div class="card">
+      <h2 class="h3">Dernières actualités</h2>
+      {{ $news := where site.RegularPages "Section" "actualites" }}
+      {{ with first 3 $news }}
+      <ul class="home-list">
+        {{ range . }}
+        <li><a href="{{ .RelPermalink }}">{{ .Title }}</a><br><small>{{ .Date | time.Format ":date_long" }}</small></li>
+        {{ end }}
+      </ul>
+      {{ else }}<p>Pas encore d'actualité.</p>{{ end }}
+      {{ with site.GetPage "/actualites" }}<p><a class="button secondary" href="{{ .RelPermalink }}">Toutes les actualités</a></p>{{ end }}
+    </div>
+    <div class="card">
+      <h2 class="h3">Prochains événements</h2>
+      {{ $upcoming := slice }}
+      {{ range where site.RegularPages "Section" "evenements" }}
+        {{ $ref := or .Params.event_end .Params.event_date }}
+        {{ if and $ref ((time.AsTime $ref).After $now) }}{{ $upcoming = $upcoming | append . }}{{ end }}
+      {{ end }}
+      {{ with first 3 (sort $upcoming "Params.event_date" "asc") }}
+      <ul class="home-list">
+        {{ range . }}
+        <li><a href="{{ .RelPermalink }}">{{ .Title }}</a><br><small>{{ (time.AsTime .Params.event_date) | time.Format ":date_long" }}{{ with .Params.lieu }} · {{ . }}{{ end }}</small></li>
+        {{ end }}
+      </ul>
+      {{ else }}<p>Aucun événement programmé.</p>{{ end }}
+      {{ with site.GetPage "/evenements" }}<p><a class="button secondary" href="{{ .RelPermalink }}">Tout l'agenda</a></p>{{ end }}
+    </div>
+  </div>
+{{ end }}

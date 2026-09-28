@@ -1,0 +1,18 @@
+{{- /* AJOUT LOCAL (voir VENDORED.md) : page Services — cartes lues dans le front matter (params.cartes),
+       pas de shortcode dans le corps. Corps = introduction ; params.suite = texte après la grille. */ -}}
+{{ define "main" }}
+{{ .Content }}
+{{- with .Params.cartes }}
+<div class="cards columns-3">
+  {{- range . }}
+  <div class="card">
+    <h3>{{ .titre }}</h3>
+    {{ .texte | markdownify }}
+  </div>
+  {{- end }}
+</div>
+{{- end }}
+{{- with .Params.suite }}
+{{ . | markdownify }}
+{{- end }}
+{{ end }}

@@ -1,0 +1,8 @@
+{{/* MODIFICATION LOCALE (voir VENDORED.md) : le CSS est pré-compilé une fois
+     avec Dart Sass autonome (assets/css/styles.css). Ni Dart Sass ni PostCSS/Node à l'exécution :
+     l'édition standard d'Hugo suffit. Original : resources.Get "scss/styles.scss" | toCSS | postCSS. */}}
+{{ with resources.Get "css/styles.css" }}
+  {{ with . | fingerprint "sha512" }}
+    <link rel="stylesheet" href="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" crossorigin="anonymous" media="all">
+  {{ end }}
+{{ end }}

@@ -1,0 +1,18 @@
+title: Bibliothèque des Acacias
+copyright: © 2026 Bibliothèque des Acacias
+params:
+  description: 'Lire, emprunter, se rencontrer : la bibliothèque publique du quartier des Acacias'
+  adresse: Place de la Vieille-École 1, 1227 Les Acacias
+  horaires:
+    - jour: Mardi
+      heures: 14 h – 19 h
+    - jour: Mercredi
+      heures: 10 h – 18 h
+    - jour: Jeudi
+      heures: 14 h – 19 h
+    - jour: Vendredi
+      heures: 14 h – 18 h
+    - jour: Samedi
+      heures: 10 h – 16 h
+    - jour: Dimanche et lundi
+      heures: fermé

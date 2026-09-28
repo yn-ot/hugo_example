@@ -1,0 +1,8 @@
+{{ define "main" }}
+{{- partial "blog/byline.html" . }}
+{{- /* MODIFICATION LOCALE : image de couverture (partials/cover.html) ; les variables $date/$allAuthors inutilisées de l'original sont retirées */ -}}
+{{- with partial "cover.html" (dict "page" . "loading" "eager") }}
+<p class="blog-item__cover">{{ . }}</p>
+{{- end }}
+{{ .Content }}
+{{ end }}

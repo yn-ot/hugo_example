@@ -1,0 +1,100 @@
+# Construit le site avec Hugo et le publie sur GitHub Pages.
+# Version d'Hugo : lue dans .hugo-version (même source que scripts/start.*).
+# Adapté du workflow officiel gohugo.io « Host on GitHub Pages » (2026-09-23).
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash            # = bash --noprofile --norc -eo pipefail : indispensable au grep | sha256sum
+
+env:
+  TZ: Europe/Paris
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04  # épinglé : ubuntu-latest passe à 26.04 entre le 19/10 et le 19/11/2026.
+                           # Retrait de l'image 24.04 prévu ~2029 : passer alors à ubuntu-latest ou à l'image suivante.
+    steps:
+      - name: Récupérer le dépôt
+        uses: actions/checkout@v7
+
+      - name: Lire la version d'Hugo (.hugo-version)
+        run: |
+          v="$(tr -d '[:space:]' < .hugo-version)"
+          if ! [[ "$v" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::.hugo-version contient « $v », ce n'est pas une version valide"; exit 1
+          fi
+          echo "HUGO_VERSION=$v" >> "$GITHUB_ENV"
+
+      - name: Installer Hugo (édition standard, empreinte vérifiée)
+        run: |
+          set -euo pipefail
+          asset="hugo_${HUGO_VERSION}_linux-amd64.tar.gz"
+          sums="hugo_${HUGO_VERSION}_checksums.txt"
+          base="https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}"
+          curl -sfL --retry 3 --output-dir "${RUNNER_TEMP}" -O "${base}/${asset}"
+          curl -sfL --retry 3 --output-dir "${RUNNER_TEMP}" -O "${base}/${sums}"
+          line="$(grep "  ${asset}\$" "${RUNNER_TEMP}/${sums}")"
+          [ "${line##*  }" = "${asset}" ] || { echo "::error::${asset} absent du fichier de contrôle"; exit 1; }   # les « . » du motif ne sont pas échappés
+          ( cd "${RUNNER_TEMP}" && printf '%s\n' "${line}" | sha256sum -c - )
+          mkdir -p "${HOME}/.local/hugo"
+          tar -C "${HOME}/.local/hugo" -xzf "${RUNNER_TEMP}/${asset}" hugo
+          echo "${HOME}/.local/hugo" >> "${GITHUB_PATH}"
+          "${HOME}/.local/hugo/hugo" version | grep -F "v${HUGO_VERSION}"
+
+      - name: Afficher la version d'Hugo
+        run: hugo version
+
+      - name: Configurer GitHub Pages
+        id: pages
+        uses: actions/configure-pages@v6
+        # Échoue avec « Get Pages site failed… » tant que Settings > Pages > Source
+        # n'est pas sur « GitHub Actions » : c'est l'étape 2 du README (« Une seule fois »).
+
+      - name: Construire le site
+        run: |
+          hugo build --gc --minify \
+            --environment production \
+            --baseURL "${{ steps.pages.outputs.base_url }}/"
+
+      - name: Garde-fou — le CMS ne doit jamais être publié
+        run: |
+          if [ -e public/admin ]; then
+            echo "::error::public/admin existe : la configuration development a fui dans le build de production"; exit 1
+          fi
+          if grep -rq 'static-admin' config/_default; then
+            echo "::error::static-admin est référencé dans config/_default : le CMS serait publié"; exit 1
+          fi
+          test -f public/index.html || { echo "::error::public/index.html manquant"; exit 1; }
+          echo "OK : public/admin absent, $(find public -type f | wc -l) fichiers générés."
+
+      - name: Empaqueter le site
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: ./public
+          include-hidden-files: false
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-24.04
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publier sur GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

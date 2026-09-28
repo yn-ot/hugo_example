@@ -1,0 +1,24 @@
+* text=auto
+
+# Scripts POSIX : LF obligatoire, sinon « bad interpreter »
+*.sh       text eol=lf
+*.command  text eol=lf
+.hugo-version text eol=lf
+
+# Scripts Windows : CRLF
+*.ps1      text eol=crlf
+*.bat      text eol=crlf
+
+# Copie de Sveltia : octets identiques partout (sinon `text=auto` + core.autocrlf=true sous Windows
+# donne du CRLF au checkout et le fichier ne correspond plus à son empreinte sha256)
+static-admin/admin/** -text
+
+# Binaires
+*.jpg  binary
+*.jpeg binary
+*.png  binary
+*.gif  binary
+*.webp binary
+*.ico  binary
+*.woff binary
+*.woff2 binary

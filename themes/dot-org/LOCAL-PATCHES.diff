@@ -1,0 +1,562 @@
+diff a/assets/scss/_fonts.scss b/assets/scss/_fonts.scss
+--- a/assets/scss/_fonts.scss	2025-07-23 18:14:43.000000000 +0200
++++ b/assets/scss/_fonts.scss	2026-09-23 18:53:44.670382300 +0200
+@@ -4,7 +4,7 @@
+     font-family: "Oswald";
+     font-style: normal;
+     font-weight: 700;
+-    src: url("/fonts/oswald-v49-latin-700.woff2") format("woff2");
++    src: url("../fonts/oswald-v49-latin-700.woff2") format("woff2");
+ }
+ /* nunito-regular - latin */
+ @font-face {
+@@ -12,7 +12,7 @@
+     font-family: "Nunito";
+     font-style: normal;
+     font-weight: 400;
+-    src: url("/fonts/nunito-v25-latin-regular.woff2") format("woff2");
++    src: url("../fonts/nunito-v25-latin-regular.woff2") format("woff2");
+ }
+ /* nunito-italic - latin */
+ @font-face {
+@@ -20,7 +20,7 @@
+     font-family: "Nunito";
+     font-style: italic;
+     font-weight: 400;
+-    src: url("/fonts/nunito-v25-latin-italic.woff2") format("woff2");
++    src: url("../fonts/nunito-v25-latin-italic.woff2") format("woff2");
+ }
+ /* nunito-700 - latin */
+ @font-face {
+@@ -28,7 +28,7 @@
+     font-family: "Nunito";
+     font-style: normal;
+     font-weight: 700;
+-    src: url("/fonts/nunito-v25-latin-700.woff2") format("woff2");
++    src: url("../fonts/nunito-v25-latin-700.woff2") format("woff2");
+ }
+ /* nunito-700italic - latin */
+ @font-face {
+@@ -36,7 +36,7 @@
+     font-family: "Nunito";
+     font-style: italic;
+     font-weight: 700;
+-    src: url("/fonts/nunito-v25-latin-700italic.woff2") format("woff2");
++    src: url("../fonts/nunito-v25-latin-700italic.woff2") format("woff2");
+ }
+ /* nunito-800 - latin */
+ @font-face {
+@@ -44,7 +44,7 @@
+     font-family: "Nunito";
+     font-style: normal;
+     font-weight: 800;
+-    src: url("/fonts/nunito-v25-latin-800.woff2") format("woff2");
++    src: url("../fonts/nunito-v25-latin-800.woff2") format("woff2");
+ }
+ /* nunito-900 - latin */
+ @font-face {
+@@ -52,5 +52,5 @@
+     font-family: "Nunito";
+     font-style: normal;
+     font-weight: 900;
+-    src: url("/fonts/nunito-v25-latin-900.woff2") format("woff2");
++    src: url("../fonts/nunito-v25-latin-900.woff2") format("woff2");
+ }
+diff a/assets/scss/_local.scss b/assets/scss/_local.scss
+--- a/assets/scss/_local.scss	1970-01-01 01:00:00.000000000 +0100
++++ b/assets/scss/_local.scss	2026-09-23 18:53:44.660927300 +0200
+@@ -0,0 +1,85 @@
++@use "variables";
++// AJOUT LOCAL (voir VENDORED.md) : couvertures, agenda, blocs de l'accueil.
++.blog-item__cover {
++    display: block;
++    margin-bottom: 15px;
++    img {
++        display: block;
++        width: 100%;
++        max-width: var(--content-width);
++        max-height: 360px;
++        object-fit: cover;
++        border-radius: 10px;
++    }
++}
++.event-meta {
++    margin-block-start: 15px;
++    margin-block-end: 12px;
++    font-family: var(--rounded-font-family);
++    font-weight: 700;
++    line-height: 150%;
++    span {
++        display: inline-block;
++        margin-right: 18px;
++    }
++    &__date {
++        text-transform: uppercase;
++        letter-spacing: 2.1px;
++        font-size: 14px;
++        @media (min-width: 600px) {
++            font-size: 16px;
++        }
++    }
++    &__place::before {
++        content: "\1F4CD\00a0";
++    }
++}
++.home-blocks {
++    .card {
++        padding: 30px 24px;
++    }
++    .horaires {
++        width: 100%;
++        border-collapse: collapse;
++        th, td {
++            text-align: left;
++            padding: 4px 0;
++            border-bottom: 1px solid var(--gray-300);
++            font-size: 16px;
++        }
++        th { font-weight: 700; padding-right: 12px; }
++    }
++    &__address {
++        margin-block-end: 0;
++        font-size: 16px;
++    }
++    .home-list {
++        list-style: none;
++        margin: 0 0 20px 0;
++        padding: 0;
++        li { margin-bottom: 14px; }
++        a { text-decoration: none; font-weight: 700; }
++        small { color: var(--gray-800); }
++    }
++    .button { margin-top: 0; margin-bottom: 0; }
++}
++
++// Six entrées de menu + titre du site en texte : évite le retour à la ligne de « À propos » entre 1250 et 1400 px.
++.header {
++    .top-menu-item > a {
++        white-space: nowrap;
++    }
++    @media (min-width: variables.$desktop-width) {
++        .site-title-link {
++            font-size: 24px;
++        }
++        .top-menu-item {
++            margin-right: 34px;
++        }
++    }
++}
++// Images 1200 px dans une grille : sans min-width: 0, l'élément de grille s'élargit au-delà de l'écran (mobile).
++.columns > .column,
++.cards > .card {
++    min-width: 0;
++}
+diff a/assets/scss/styles.scss b/assets/scss/styles.scss
+--- a/assets/scss/styles.scss	2025-07-23 18:14:43.000000000 +0200
++++ b/assets/scss/styles.scss	2026-09-23 18:53:44.643801200 +0200
+@@ -24,3 +24,4 @@
+ @use "shortcodes/toc";
+ @use "shortcodes/intro";
+ @use "shortcodes/youtube-enhanced";
++@use "local";
+diff a/i18n/fr.toml b/i18n/fr.toml
+--- a/i18n/fr.toml	1970-01-01 01:00:00.000000000 +0100
++++ b/i18n/fr.toml	2026-09-23 18:53:44.635912200 +0200
+@@ -0,0 +1,9 @@
++# AJOUT LOCAL (voir VENDORED.md) : le thème ne fournit aucune traduction (pas de dossier i18n/ en amont).
++[breadcrumb_home]
++other = "Accueil"
++[by]
++other = "par"
++[social_link_title]
++other = "{{ .SiteTitle }} sur {{ .Network }}"
++[not_found_title]
++other = "Page introuvable"
+diff a/layouts/404.html b/layouts/404.html
+--- a/layouts/404.html	2025-07-23 18:14:43.000000000 +0200
++++ b/layouts/404.html	2026-09-23 18:53:45.007594600 +0200
+@@ -1,6 +1,7 @@
++{{/* MODIFICATION LOCALE : texte en français */}}
+ {{ define "main" }}
+     <main>
+-        <p>We're sorry, but the page you were trying to view does not exist.</p>
+-        <p><a href="{{ "/" | relLangURL }}">Go to homepage</a></p>
++        <p>Désolé, la page que vous cherchez n'existe pas (ou plus).</p>
++        <p><a href="{{ site.Home.RelPermalink }}">Retour à l'accueil</a></p>
+     </main>
+ {{ end }}
+diff a/layouts/_default/baseof.html b/layouts/_default/baseof.html
+--- a/layouts/_default/baseof.html	2025-07-23 18:14:43.000000000 +0200
++++ b/layouts/_default/baseof.html	2026-09-23 18:53:44.995711600 +0200
+@@ -11,7 +11,8 @@
+                     {{ if and (eq .Kind "page") (ne .Section "") }}
+                     {{- partial "breadcrumb.html" . -}}
+                     {{ end }}
+-                    <h1 class="title">{{ .Title }}</h1>
++                    {{/* MODIFICATION LOCALE : 404 en français, voir partials/page-title.html */}}
++                    <h1 class="title">{{ partial "page-title.html" . }}</h1>
+                 </header>
+             {{ end }}
+             {{ if or (eq .Kind "section") (eq .Kind "home") }}
+diff a/layouts/_default/rss.xml b/layouts/_default/rss.xml
+--- a/layouts/_default/rss.xml	2025-07-23 18:14:43.000000000 +0200
++++ b/layouts/_default/rss.xml	2026-09-23 18:53:44.998537200 +0200
+@@ -1,8 +1,8 @@
+ <rss version="2.0">
+     <channel>
+-        <title>{{ if eq .Title .Site.Title }}{{ .Site.Title }}{{ else }}{{ with .Title }}{{.}} on {{ end }}{{ .Site.Title }}{{ end }}</title>
++        <title>{{ if eq .Title .Site.Title }}{{ .Site.Title }}{{ else }}{{ with .Title }}{{.}} – {{ end }}{{ .Site.Title }}{{ end }}</title>
+         <link>{{ .Permalink }}</link>
+-        <description>Recent content in {{ .Site.Title }}</description>
++        <description>Contenus récents de {{ .Site.Title }}</description>
+ 
+         {{ if eq .Kind "home" }} <!-- If it's the main index -->
+             {{ range .Site.RegularPages }}
+diff a/layouts/blog/list.html b/layouts/blog/list.html
+--- a/layouts/blog/list.html	2025-07-23 18:14:43.000000000 +0200
++++ b/layouts/blog/list.html	2026-09-23 18:53:44.986966300 +0200
+@@ -3,6 +3,10 @@
+   {{ $paginator := .Paginate .Pages }}
+   {{- range $paginator.Pages }}
+       <article class="blog-item">
++        {{- /* MODIFICATION LOCALE : image de couverture (partials/cover.html) */ -}}
++        {{- with partial "cover.html" (dict "page" . "size" "800x") }}
++        <a class="blog-item__cover" href="{{ $.RelPermalink }}" tabindex="-1" aria-hidden="true">{{ . }}</a>
++        {{- end }}
+         <h2 class="blog-item__title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+         {{- partial "blog/byline.html" . }}
+         <p class="blog-item__summary">{{ .Summary | plainify }}</p>
+diff a/layouts/blog/single.html b/layouts/blog/single.html
+--- a/layouts/blog/single.html	2025-07-23 18:14:43.000000000 +0200
++++ b/layouts/blog/single.html	2026-09-23 18:53:44.989202400 +0200
+@@ -1,9 +1,8 @@
+ {{ define "main" }}
+-{{- $date := .Date.Format "Monday, January 1, 2006" }}
+-{{- $allAuthors := .Site.Data.authors }}
+-{{- $author := .Params.author }}
+-
+ {{- partial "blog/byline.html" . }}
++{{- /* MODIFICATION LOCALE : image de couverture (partials/cover.html) ; les variables $date/$allAuthors inutilisées de l'original sont retirées */ -}}
++{{- with partial "cover.html" (dict "page" . "loading" "eager") }}
++<p class="blog-item__cover">{{ . }}</p>
++{{- end }}
+ {{ .Content }}
+-
+ {{ end }}
+diff a/layouts/evenements/list.html b/layouts/evenements/list.html
+--- a/layouts/evenements/list.html	1970-01-01 01:00:00.000000000 +0100
++++ b/layouts/evenements/list.html	2026-09-23 18:53:45.014207100 +0200
+@@ -0,0 +1,31 @@
++{{- /* AJOUT LOCAL (voir VENDORED.md) : agenda de la section « evenements ».
++       À venir (triés par date de l'événement, le plus proche en premier), puis passés.
++       « Maintenant » = moment de la construction du site (à chaque publication). */ -}}
++{{ define "main" }}
++  {{ .Content }}
++  {{ $now := now }}
++  {{ $upcoming := slice }}
++  {{ $past := slice }}
++  {{ range .Pages }}
++    {{ $ref := or .Params.event_end .Params.event_date }}
++    {{ if and $ref ((time.AsTime $ref).After $now) }}
++      {{ $upcoming = $upcoming | append . }}
++    {{ else }}
++      {{ $past = $past | append . }}
++    {{ end }}
++  {{ end }}
++  <h2>À venir</h2>
++  {{ if $upcoming }}
++    {{ range sort $upcoming "Params.event_date" "asc" }}
++      {{ partial "event-item.html" . }}
++    {{ end }}
++  {{ else }}
++    <p>Aucun événement n'est programmé pour le moment. Revenez bientôt !</p>
++  {{ end }}
++  {{ with $past }}
++    <h2>Événements passés</h2>
++    {{ range sort . "Params.event_date" "desc" }}
++      {{ partial "event-item.html" . }}
++    {{ end }}
++  {{ end }}
++{{ end }}
+diff a/layouts/evenements/single.html b/layouts/evenements/single.html
+--- a/layouts/evenements/single.html	1970-01-01 01:00:00.000000000 +0100
++++ b/layouts/evenements/single.html	2026-09-23 18:53:45.012548000 +0200
+@@ -0,0 +1,9 @@
++{{- /* AJOUT LOCAL (voir VENDORED.md) : page d'un événement */ -}}
++{{ define "main" }}
++{{ partial "event-meta.html" . }}
++{{- with partial "cover.html" (dict "page" . "loading" "eager") }}
++<p class="blog-item__cover">{{ . }}</p>
++{{- end }}
++{{ .Content }}
++<p><a class="button secondary" href="{{ .Parent.RelPermalink }}">Tous les événements</a></p>
++{{ end }}
+diff a/layouts/index.html b/layouts/index.html
+--- a/layouts/index.html	1970-01-01 01:00:00.000000000 +0100
++++ b/layouts/index.html	2026-09-27 22:57:13.322106600 +0200
+@@ -0,0 +1,49 @@
++{{- /* AJOUT LOCAL (voir VENDORED.md) : page d'accueil.
++       Sans ce fichier, _default/list.html afficherait sous le texte la liste des pages de premier niveau.
++       Ici : le contenu de content/_index.md, puis trois blocs : horaires (site.Params.horaires et site.Params.adresse ;
++       la carte entière est omise si les deux sont vides), dernières actualités, prochains événements. */ -}}
++{{ define "main" }}
++  {{ .Content }}
++  {{ $now := now }}
++  <div class="cards columns-3 home-blocks">
++    {{ if or site.Params.horaires site.Params.adresse }}
++    <div class="card">
++      <h2 class="h3">Horaires</h2>
++      {{ with site.Params.horaires }}
++      <table class="horaires">
++        {{ range . }}<tr><th scope="row">{{ .jour }}</th><td>{{ .heures }}</td></tr>{{ end }}
++      </table>
++      {{ end }}
++      {{ with site.Params.adresse }}<p class="home-blocks__address">{{ . | markdownify }}</p>{{ end }}
++    </div>
++    {{ end }}
++    <div class="card">
++      <h2 class="h3">Dernières actualités</h2>
++      {{ $news := where site.RegularPages "Section" "actualites" }}
++      {{ with first 3 $news }}
++      <ul class="home-list">
++        {{ range . }}
++        <li><a href="{{ .RelPermalink }}">{{ .Title }}</a><br><small>{{ .Date | time.Format ":date_long" }}</small></li>
++        {{ end }}
++      </ul>
++      {{ else }}<p>Pas encore d'actualité.</p>{{ end }}
++      {{ with site.GetPage "/actualites" }}<p><a class="button secondary" href="{{ .RelPermalink }}">Toutes les actualités</a></p>{{ end }}
++    </div>
++    <div class="card">
++      <h2 class="h3">Prochains événements</h2>
++      {{ $upcoming := slice }}
++      {{ range where site.RegularPages "Section" "evenements" }}
++        {{ $ref := or .Params.event_end .Params.event_date }}
++        {{ if and $ref ((time.AsTime $ref).After $now) }}{{ $upcoming = $upcoming | append . }}{{ end }}
++      {{ end }}
++      {{ with first 3 (sort $upcoming "Params.event_date" "asc") }}
++      <ul class="home-list">
++        {{ range . }}
++        <li><a href="{{ .RelPermalink }}">{{ .Title }}</a><br><small>{{ (time.AsTime .Params.event_date) | time.Format ":date_long" }}{{ with .Params.lieu }} · {{ . }}{{ end }}</small></li>
++        {{ end }}
++      </ul>
++      {{ else }}<p>Aucun événement programmé.</p>{{ end }}
++      {{ with site.GetPage "/evenements" }}<p><a class="button secondary" href="{{ .RelPermalink }}">Tout l'agenda</a></p>{{ end }}
++    </div>
++  </div>
++{{ end }}
+diff a/layouts/partials/blog/byline.html b/layouts/partials/blog/byline.html
+--- a/layouts/partials/blog/byline.html	2025-07-23 18:14:43.000000000 +0200
++++ b/layouts/partials/blog/byline.html	2026-09-23 18:53:44.925053700 +0200
+@@ -1,5 +1,5 @@
+-{{- $date := .Date.Format "January 2, 2006" }}
+-{{- $allAuthors := .Site.Data.authors }}
++{{- $date := .Date | time.Format ":date_long" }}{{/* MODIFICATION LOCALE : date localisée */}}
++{{- $allAuthors := hugo.Data.authors }}{{/* MODIFICATION LOCALE : .Site.Data déprécié (0.156) */}}
+ {{- $authorKey := .Params.author }}
+ {{- $authorData := index $allAuthors $authorKey }}
+ 
+diff a/layouts/partials/cover.html b/layouts/partials/cover.html
+--- a/layouts/partials/cover.html	1970-01-01 01:00:00.000000000 +0100
++++ b/layouts/partials/cover.html	2026-09-27 22:57:13.491309500 +0200
+@@ -0,0 +1,15 @@
++{{- /* AJOUT LOCAL (voir VENDORED.md) : image de couverture d'un bundle.
++       Usage : partial "cover.html" (dict "page" . "size" "800x" "loading" "lazy")
++       Lit le front matter `image` (ou `featured_image`) : nom d'un fichier placé à côté de index.md. */ -}}
++{{- $p := .page }}
++{{- $size := .size }}
++{{- $loading := .loading | default "lazy" }}
++{{- with $p.Resources.GetMatch (or $p.Params.image $p.Params.featured_image "-") }}
++  {{- $img := . }}
++  {{- if and (eq .ResourceType "image") (in (slice "jpeg" "png" "webp") .MediaType.SubType) }}
++    {{- with $size }}{{ $w := int (strings.TrimSuffix "x" .) }}{{ if gt $img.Width $w }}{{ $img = $img.Resize . }}{{ end }}{{ end }}
++    <img src="{{ $img.RelPermalink }}" width="{{ $img.Width }}" height="{{ $img.Height }}" alt="{{ $p.Params.image_alt | default "" }}" loading="{{ $loading }}">
++  {{- else }}
++    <img src="{{ .RelPermalink }}" alt="{{ $p.Params.image_alt | default "" }}" loading="{{ $loading }}">
++  {{- end }}
++{{- end }}
+diff a/layouts/partials/event-item.html b/layouts/partials/event-item.html
+--- a/layouts/partials/event-item.html	1970-01-01 01:00:00.000000000 +0100
++++ b/layouts/partials/event-item.html	2026-09-23 18:53:44.918474000 +0200
+@@ -0,0 +1,9 @@
++{{- /* AJOUT LOCAL : un événement dans une liste */ -}}
++<article class="blog-item event-item">
++  {{- with partial "cover.html" (dict "page" . "size" "800x") }}
++  <a class="blog-item__cover" href="{{ $.RelPermalink }}" tabindex="-1" aria-hidden="true">{{ . }}</a>
++  {{- end }}
++  <h3 class="blog-item__title h2"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
++  {{ partial "event-meta.html" . }}
++  <p class="blog-item__summary">{{ .Summary | plainify }}</p>
++</article>
+diff a/layouts/partials/event-meta.html b/layouts/partials/event-meta.html
+--- a/layouts/partials/event-meta.html	1970-01-01 01:00:00.000000000 +0100
++++ b/layouts/partials/event-meta.html	2026-09-23 18:53:44.977292000 +0200
+@@ -0,0 +1,22 @@
++{{- /* AJOUT LOCAL : date, heure et lieu d'un événement (front matter event_date, event_end, lieu) */ -}}
++{{- with .Params.event_date }}
++{{- $start := time.AsTime . }}
++{{- $end := "" }}{{ with $.Params.event_end }}{{ $end = time.AsTime . }}{{ end }}
++{{- $sameDay := and $end (eq ($end | time.Format "2006-01-02") ($start | time.Format "2006-01-02")) }}
++<p class="event-meta">
++  <span class="event-meta__date">{{ $start | time.Format "Monday 2 January 2006" }}</span>
++  {{- if ne ($start | time.Format "15:04") "00:00" }}
++    <span class="event-meta__time">
++      {{- if $sameDay -}}
++        de {{ $start | time.Format "15h04" }} à {{ $end | time.Format "15h04" }}
++      {{- else -}}
++        à {{ $start | time.Format "15h04" }}
++      {{- end -}}
++    </span>
++  {{- end }}
++  {{- if and $end (not $sameDay) }}
++    <span class="event-meta__end">jusqu'au {{ $end | time.Format ":date_long" }}</span>
++  {{- end }}
++  {{- with $.Params.lieu }}<span class="event-meta__place">{{ . }}</span>{{ end }}
++</p>
++{{- end }}
+diff a/layouts/partials/footer.html b/layouts/partials/footer.html
+--- a/layouts/partials/footer.html	2025-07-23 18:14:43.000000000 +0200
++++ b/layouts/partials/footer.html	2026-09-27 22:58:49.998430700 +0200
+@@ -57,7 +57,7 @@
+ 
+         <div class="footer__logo-social-wrapper">
+             {{ with .Site.Params.logo_on_black }}
+-            <a class="logo-link" href="{{ "/" | absLangURL }}">
++            <a class="logo-link" href="{{ site.Home.RelPermalink }}">
+                 <img loading="lazy" class="logo" width="150" height="40" src="{{ . | absURL }}" alt="{{ $.Site.Title | safeHTMLAttr }}"></a>
+             {{ end }}
+ 
+@@ -67,7 +67,8 @@
+         <hr class="footer-hr">
+ 
+         <div class="copyright">
+-            <p>{{ .Site.Copyright | default "Copyright &copy; {{< current_year >}} All Rights Reserved. [Dot Org Theme](https://github.com/cncf/dot-org-hugo-theme) for Hugo by [CNCF](https://www.cncf.io)." | markdownify }}</p>
++            {{- /* MODIFICATION LOCALE : repli en français (« © <année> <titre du site> ») quand la clé copyright de la configuration est vide */ -}}
++            <p>{{ .Site.Copyright | default (printf "© %d %s" now.Year .Site.Title) | markdownify }}</p>
+ 
+             <div class="copyright__accessibility-git-wrapper">
+                 {{ if .Site.Params.accessibility.help_url }}
+diff a/layouts/partials/head/css.html b/layouts/partials/head/css.html
+--- a/layouts/partials/head/css.html	2025-07-23 18:14:43.000000000 +0200
++++ b/layouts/partials/head/css.html	2026-09-23 18:53:44.954599600 +0200
+@@ -1,18 +1,8 @@
+-{{ with resources.Get "scss/styles.scss" }}
+-  {{ $opts := dict
+-    "enableSourceMap" hugo.IsDevelopment
+-    "outputStyle" (cond hugo.IsDevelopment "expanded" "compressed")
+-    "targetPath" "css/styles.css"
+-    "transpiler" "dartsass"
+-    "vars" site.Params.styles
+-  }}
+-  {{ with . | toCSS $opts | postCSS }}
+-    {{ if hugo.IsDevelopment }}
+-      <link rel="stylesheet" href="{{ .RelPermalink }}" media="all">
+-    {{ else }}
+-      {{ with . | fingerprint "sha512"}}
+-        <link rel="stylesheet" href="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" crossorigin="anonymous" media="all">
+-      {{ end }}
+-    {{ end }}
++{{/* MODIFICATION LOCALE (voir VENDORED.md) : le CSS est pré-compilé une fois
++     avec Dart Sass autonome (assets/css/styles.css). Ni Dart Sass ni PostCSS/Node à l'exécution :
++     l'édition standard d'Hugo suffit. Original : resources.Get "scss/styles.scss" | toCSS | postCSS. */}}
++{{ with resources.Get "css/styles.css" }}
++  {{ with . | fingerprint "sha512" }}
++    <link rel="stylesheet" href="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" crossorigin="anonymous" media="all">
+   {{ end }}
+ {{ end }}
+diff a/layouts/partials/head/preload.html b/layouts/partials/head/preload.html
+--- a/layouts/partials/head/preload.html	2025-07-23 18:14:43.000000000 +0200
++++ b/layouts/partials/head/preload.html	2026-09-23 18:53:44.956250200 +0200
+@@ -1,4 +1,5 @@
+-<link rel="preload" href="/fonts/nunito-v25-latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+-<link rel="preload" href="/fonts/oswald-v49-latin-700.woff2" as="font" type="font/woff2" crossorigin>
+-<link rel="preload" href="/fonts/nunito-v25-latin-700.woff2" as="font" type="font/woff2" crossorigin>
+-<link rel="preload" href="/fonts/nunito-v25-latin-800.woff2" as="font" type="font/woff2" crossorigin>
++{{/* MODIFICATION LOCALE : relURL au lieu de /fonts/… (sous-chemin GitHub Pages) */}}
++<link rel="preload" href="{{ "fonts/nunito-v25-latin-regular.woff2" | relURL }}" as="font" type="font/woff2" crossorigin>
++<link rel="preload" href="{{ "fonts/oswald-v49-latin-700.woff2" | relURL }}" as="font" type="font/woff2" crossorigin>
++<link rel="preload" href="{{ "fonts/nunito-v25-latin-700.woff2" | relURL }}" as="font" type="font/woff2" crossorigin>
++<link rel="preload" href="{{ "fonts/nunito-v25-latin-800.woff2" | relURL }}" as="font" type="font/woff2" crossorigin>
+diff a/layouts/partials/head.html b/layouts/partials/head.html
+--- a/layouts/partials/head.html	2025-07-23 18:14:43.000000000 +0200
++++ b/layouts/partials/head.html	2026-09-23 18:53:44.969984400 +0200
+@@ -1,4 +1,5 @@
+-{{ $title := cond .IsHome .Site.Title (print .Title " | " .Site.Title) }}
++{{/* MODIFICATION LOCALE : titre via partials/page-title.html (404 en français) ; pas de cartes OpenGraph/Twitter sur la 404 (titre anglais interne à Hugo) */}}
++{{ $title := cond .IsHome .Site.Title (print (partial "page-title.html" .) " | " .Site.Title) }}
+ {{ $description := .Description | default (.Summary | truncate 160) | default .Site.Params.description | default "" }}
+ 
+ <head>
+@@ -14,8 +15,10 @@
+ 
+     {{- partial "head/preload.html" . }}
+     {{- partial "head/css.html" . }}
++    {{- if ne .Kind "404" }}
+     {{- template "_internal/opengraph.html" . -}}
+     {{- partial "head/twitter-cards.html" . }}
++    {{- end }}
+     {{- partial "head/published-time.html" . }}
+     {{- partial "head/favicons.html" . }}
+     {{- template "_internal/google_analytics.html" . -}}
+diff a/layouts/partials/header.html b/layouts/partials/header.html
+--- a/layouts/partials/header.html	2025-07-23 18:14:43.000000000 +0200
++++ b/layouts/partials/header.html	2026-09-23 18:53:44.973831100 +0200
+@@ -6,11 +6,11 @@
+     <div class="container wrap">
+ 
+         {{ with .Site.Params.logo_on_white }}
+-        <a class="logo-link" href="{{ "/" | absLangURL }}">
++        <a class="logo-link" href="{{ site.Home.RelPermalink }}">
+             <img class="logo" width="150" height="40" src="{{ . | absURL }}" alt="{{ $.Site.Title | safeHTMLAttr }}">
+         </a>
+         {{ else }}
+-        <a class="site-title-link" href="{{ "/" | absLangURL }}">
++        <a class="site-title-link" href="{{ site.Home.RelPermalink }}">
+             <span class="site-title">{{ $.Site.Title }}</span>
+         </a>
+         {{ end }}
+@@ -68,7 +68,7 @@
+             </div>
+ 
+         </nav>
+-        <button class="hamburger" type="button" aria-label="Toggle Menu">
++        <button class="hamburger" type="button" aria-label="Ouvrir ou fermer le menu">
+             <span class="hamburger-box">
+                 <span class="hamburger-inner"></span>
+             </span>
+diff a/layouts/partials/page-title.html b/layouts/partials/page-title.html
+--- a/layouts/partials/page-title.html	1970-01-01 01:00:00.000000000 +0100
++++ b/layouts/partials/page-title.html	2026-09-23 18:53:44.965541300 +0200
+@@ -0,0 +1,4 @@
++{{- /* AJOUT LOCAL (voir VENDORED.md) : titre de la page tel qu'affiché (h1, <title>).
++       La page 404 a un titre anglais codé en dur dans Hugo (« 404 Page not found », non configurable) :
++       on lui substitue la chaîne i18n `not_found_title`. */ -}}
++{{- if eq .Kind "404" }}{{ i18n "not_found_title" | default "Page introuvable" }}{{ else }}{{ .Title }}{{ end -}}
+diff a/layouts/shortcodes/button.html b/layouts/shortcodes/button.html
+--- a/layouts/shortcodes/button.html	2025-07-23 18:14:43.000000000 +0200
++++ b/layouts/shortcodes/button.html	2026-09-23 18:53:44.892908900 +0200
+@@ -1 +1,2 @@
+-<a href="{{ .Get "link" }}" class="{{ with .Get "style" }}{{ if eq . "secondary" }}button secondary{{ else if eq . "tertiary" }}button tertiary{{ else }}button{{ end }}{{ else }}button{{ end }}">{{ .Get "text" }}</a>
++{{- /* MODIFICATION LOCALE : href passé par relURL (sous-chemin GitHub Pages) ; écrire link="services/" sans barre initiale */ -}}
++<a href="{{ .Get "link" | relURL }}" class="{{ with .Get "style" }}{{ if eq . "secondary" }}button secondary{{ else if eq . "tertiary" }}button tertiary{{ else }}button{{ end }}{{ else }}button{{ end }}">{{ .Get "text" }}</a>
+diff a/layouts/services/single.html b/layouts/services/single.html
+--- a/layouts/services/single.html	1970-01-01 01:00:00.000000000 +0100
++++ b/layouts/services/single.html	2026-09-27 22:14:34.563473400 +0200
+@@ -0,0 +1,18 @@
++{{- /* AJOUT LOCAL (voir VENDORED.md) : page Services — cartes lues dans le front matter (params.cartes),
++       pas de shortcode dans le corps. Corps = introduction ; params.suite = texte après la grille. */ -}}
++{{ define "main" }}
++{{ .Content }}
++{{- with .Params.cartes }}
++<div class="cards columns-3">
++  {{- range . }}
++  <div class="card">
++    <h3>{{ .titre }}</h3>
++    {{ .texte | markdownify }}
++  </div>
++  {{- end }}
++</div>
++{{- end }}
++{{- with .Params.suite }}
++{{ . | markdownify }}
++{{- end }}
++{{ end }}

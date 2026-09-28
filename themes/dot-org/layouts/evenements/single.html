@@ -1,0 +1,9 @@
+{{- /* AJOUT LOCAL (voir VENDORED.md) : page d'un événement */ -}}
+{{ define "main" }}
+{{ partial "event-meta.html" . }}
+{{- with partial "cover.html" (dict "page" . "loading" "eager") }}
+<p class="blog-item__cover">{{ . }}</p>
+{{- end }}
+{{ .Content }}
+<p><a class="button secondary" href="{{ .Parent.RelPermalink }}">Tous les événements</a></p>
+{{ end }}

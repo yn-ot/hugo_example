@@ -1,0 +1,2 @@
+{{- /* MODIFICATION LOCALE : href passé par relURL (sous-chemin GitHub Pages) ; écrire link="services/" sans barre initiale */ -}}
+<a href="{{ .Get "link" | relURL }}" class="{{ with .Get "style" }}{{ if eq . "secondary" }}button secondary{{ else if eq . "tertiary" }}button tertiary{{ else }}button{{ end }}{{ else }}button{{ end }}">{{ .Get "text" }}</a>

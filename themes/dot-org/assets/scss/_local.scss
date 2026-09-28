@@ -1,0 +1,85 @@
+@use "variables";
+// AJOUT LOCAL (voir VENDORED.md) : couvertures, agenda, blocs de l'accueil.
+.blog-item__cover {
+    display: block;
+    margin-bottom: 15px;
+    img {
+        display: block;
+        width: 100%;
+        max-width: var(--content-width);
+        max-height: 360px;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+}
+.event-meta {
+    margin-block-start: 15px;
+    margin-block-end: 12px;
+    font-family: var(--rounded-font-family);
+    font-weight: 700;
+    line-height: 150%;
+    span {
+        display: inline-block;
+        margin-right: 18px;
+    }
+    &__date {
+        text-transform: uppercase;
+        letter-spacing: 2.1px;
+        font-size: 14px;
+        @media (min-width: 600px) {
+            font-size: 16px;
+        }
+    }
+    &__place::before {
+        content: "\1F4CD\00a0";
+    }
+}
+.home-blocks {
+    .card {
+        padding: 30px 24px;
+    }
+    .horaires {
+        width: 100%;
+        border-collapse: collapse;
+        th, td {
+            text-align: left;
+            padding: 4px 0;
+            border-bottom: 1px solid var(--gray-300);
+            font-size: 16px;
+        }
+        th { font-weight: 700; padding-right: 12px; }
+    }
+    &__address {
+        margin-block-end: 0;
+        font-size: 16px;
+    }
+    .home-list {
+        list-style: none;
+        margin: 0 0 20px 0;
+        padding: 0;
+        li { margin-bottom: 14px; }
+        a { text-decoration: none; font-weight: 700; }
+        small { color: var(--gray-800); }
+    }
+    .button { margin-top: 0; margin-bottom: 0; }
+}
+
+// Six entrées de menu + titre du site en texte : évite le retour à la ligne de « À propos » entre 1250 et 1400 px.
+.header {
+    .top-menu-item > a {
+        white-space: nowrap;
+    }
+    @media (min-width: variables.$desktop-width) {
+        .site-title-link {
+            font-size: 24px;
+        }
+        .top-menu-item {
+            margin-right: 34px;
+        }
+    }
+}
+// Images 1200 px dans une grille : sans min-width: 0, l'élément de grille s'élargit au-delà de l'écran (mobile).
+.columns > .column,
+.cards > .card {
+    min-width: 0;
+}

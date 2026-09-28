@@ -1,0 +1,11 @@
+# Appliqué uniquement par `hugo server` (environnement development).
+buildDrafts = true
+
+# Déclarer un mount pour « static » supprime le mount par défaut : il faut lister les deux.
+[[module.mounts]]
+source = 'static'
+target = 'static'
+
+[[module.mounts]]
+source = 'static-admin'
+target = 'static'

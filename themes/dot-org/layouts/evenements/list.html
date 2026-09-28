@@ -1,0 +1,31 @@
+{{- /* AJOUT LOCAL (voir VENDORED.md) : agenda de la section « evenements ».
+       À venir (triés par date de l'événement, le plus proche en premier), puis passés.
+       « Maintenant » = moment de la construction du site (à chaque publication). */ -}}
+{{ define "main" }}
+  {{ .Content }}
+  {{ $now := now }}
+  {{ $upcoming := slice }}
+  {{ $past := slice }}
+  {{ range .Pages }}
+    {{ $ref := or .Params.event_end .Params.event_date }}
+    {{ if and $ref ((time.AsTime $ref).After $now) }}
+      {{ $upcoming = $upcoming | append . }}
+    {{ else }}
+      {{ $past = $past | append . }}
+    {{ end }}
+  {{ end }}
+  <h2>À venir</h2>
+  {{ if $upcoming }}
+    {{ range sort $upcoming "Params.event_date" "asc" }}
+      {{ partial "event-item.html" . }}
+    {{ end }}
+  {{ else }}
+    <p>Aucun événement n'est programmé pour le moment. Revenez bientôt !</p>
+  {{ end }}
+  {{ with $past }}
+    <h2>Événements passés</h2>
+    {{ range sort . "Params.event_date" "desc" }}
+      {{ partial "event-item.html" . }}
+    {{ end }}
+  {{ end }}
+{{ end }}

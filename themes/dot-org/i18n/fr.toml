@@ -1,0 +1,9 @@
+# AJOUT LOCAL (voir VENDORED.md) : le thème ne fournit aucune traduction (pas de dossier i18n/ en amont).
+[breadcrumb_home]
+other = "Accueil"
+[by]
+other = "par"
+[social_link_title]
+other = "{{ .SiteTitle }} sur {{ .Network }}"
+[not_found_title]
+other = "Page introuvable"

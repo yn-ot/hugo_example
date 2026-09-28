@@ -1,0 +1,4 @@
+{{- /* AJOUT LOCAL (voir VENDORED.md) : titre de la page tel qu'affiché (h1, <title>).
+       La page 404 a un titre anglais codé en dur dans Hugo (« 404 Page not found », non configurable) :
+       on lui substitue la chaîne i18n `not_found_title`. */ -}}
+{{- if eq .Kind "404" }}{{ i18n "not_found_title" | default "Page introuvable" }}{{ else }}{{ .Title }}{{ end -}}

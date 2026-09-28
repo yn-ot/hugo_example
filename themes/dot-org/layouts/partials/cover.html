@@ -1,0 +1,15 @@
+{{- /* AJOUT LOCAL (voir VENDORED.md) : image de couverture d'un bundle.
+       Usage : partial "cover.html" (dict "page" . "size" "800x" "loading" "lazy")
+       Lit le front matter `image` (ou `featured_image`) : nom d'un fichier placé à côté de index.md. */ -}}
+{{- $p := .page }}
+{{- $size := .size }}
+{{- $loading := .loading | default "lazy" }}
+{{- with $p.Resources.GetMatch (or $p.Params.image $p.Params.featured_image "-") }}
+  {{- $img := . }}
+  {{- if and (eq .ResourceType "image") (in (slice "jpeg" "png" "webp") .MediaType.SubType) }}
+    {{- with $size }}{{ $w := int (strings.TrimSuffix "x" .) }}{{ if gt $img.Width $w }}{{ $img = $img.Resize . }}{{ end }}{{ end }}
+    <img src="{{ $img.RelPermalink }}" width="{{ $img.Width }}" height="{{ $img.Height }}" alt="{{ $p.Params.image_alt | default "" }}" loading="{{ $loading }}">
+  {{- else }}
+    <img src="{{ .RelPermalink }}" alt="{{ $p.Params.image_alt | default "" }}" loading="{{ $loading }}">
+  {{- end }}
+{{- end }}

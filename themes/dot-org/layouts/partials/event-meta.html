@@ -1,0 +1,22 @@
+{{- /* AJOUT LOCAL : date, heure et lieu d'un événement (front matter event_date, event_end, lieu) */ -}}
+{{- with .Params.event_date }}
+{{- $start := time.AsTime . }}
+{{- $end := "" }}{{ with $.Params.event_end }}{{ $end = time.AsTime . }}{{ end }}
+{{- $sameDay := and $end (eq ($end | time.Format "2006-01-02") ($start | time.Format "2006-01-02")) }}
+<p class="event-meta">
+  <span class="event-meta__date">{{ $start | time.Format "Monday 2 January 2006" }}</span>
+  {{- if ne ($start | time.Format "15:04") "00:00" }}
+    <span class="event-meta__time">
+      {{- if $sameDay -}}
+        de {{ $start | time.Format "15h04" }} à {{ $end | time.Format "15h04" }}
+      {{- else -}}
+        à {{ $start | time.Format "15h04" }}
+      {{- end -}}
+    </span>
+  {{- end }}
+  {{- if and $end (not $sameDay) }}
+    <span class="event-meta__end">jusqu'au {{ $end | time.Format ":date_long" }}</span>
+  {{- end }}
+  {{- with $.Params.lieu }}<span class="event-meta__place">{{ . }}</span>{{ end }}
+</p>
+{{- end }}
