@@ -50,3 +50,5 @@ Pour arrêter : fermez la fenêtre noire (Windows) ou la fenêtre Terminal (Mac 
 > - **Après un Pull, rechargez la page du CMS.**
 
 Le code du template est sous licence MIT ; le contenu que vous écrivez vous appartient.
+
+Une p'tite ligne en plus
