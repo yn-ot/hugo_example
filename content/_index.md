@@ -1,11 +1,13 @@
 ---
-title: 'Bibliothèque des Acacias'
+title: Bibliothèque des Acacias
 description: 'Lire, emprunter, se rencontrer : la bibliothèque publique du quartier des Acacias'
 showHeader: false
 ---
+
 {{< columns count=2 >}}
 {{< column >}}
-# Bienvenue à la Bibliothèque des Acacias
+
+# Bienvenue à la Bibliothèque des Acacacias
 
 {{< intro >}}
 Lire, emprunter, se rencontrer : la bibliothèque publique du quartier des Acacias est ouverte à toutes et à tous, gratuitement. Plus de 40 000 livres, BD, revues, films et jeux vous attendent, ainsi qu'un espace numérique et des rendez-vous pour tous les âges.
